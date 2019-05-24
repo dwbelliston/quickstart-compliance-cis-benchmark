@@ -1038,7 +1038,7 @@ Resources:
     - ResourceForEvaluateCISBenchmarkPreconditions
     Properties:
       FunctionName: CIS-EvaluateFullAdminPolicyPermissions
-      Description: Evaluates whether policies allowing full admin privileges '*:*'
+      Description: Evaluates whether policies allowing full admin privileges '*'
         have been created
       Code:
         ZipFile: |
@@ -1056,7 +1056,7 @@ Resources:
               VersionId = policy['DefaultVersionId']
             )
             # search for full admin privileges within the policy statements
-            if jmespath.search('PolicyVersion.Document.Statement[?Effect == \'Allow\' && contains(Resource, \'*\') && contains (Action, \'*\')]', policy_version):
+            if jmespath.search('PolicyVersion.Document.Statement[?Effect == \'Allow\' && contains(Resource, \'*\') && contains (to_array(Action), \'*\')]', policy_version):
               return_value = 'NON_COMPLIANT'
             return return_value
           def lambda_handler(event, context):
@@ -1095,7 +1095,7 @@ Resources:
     - ResourceForEvaluateCISBenchmarkPreconditions
     Properties:
       ConfigRuleName: CIS-EvaluateFullAdminPrivilegesPolicies
-      Description: CIS 1.22 - Ensure IAM policies that allow full '*:*' administrative
+      Description: CIS 1.22 - Ensure IAM policies that allow full '*' administrative
         privileges are not created (Scored)
       Scope:
         ComplianceResourceTypes:
